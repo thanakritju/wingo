@@ -1,19 +1,22 @@
 package main
 
 import (
-	"fmt"
-	"unsafe"
+	"flag"
 
-	"golang.org/x/sys/windows"
+	"wingo/functions"
 )
 
 var (
-	user32DLL           = windows.NewLazyDLL("user32.dll")
-	procSystemParamInfo = user32DLL.NewProc("SystemParametersInfoW")
+	function = flag.String("f", "changeBackground", "windows function to call")
 )
 
 func main() {
-	imagePath, _ := windows.UTF16PtrFromString(`C:\Users\thana\Pictures\Camera Roll\gn.jpg`)
-	fmt.Println("[+] Changing background now...")
-	procSystemParamInfo.Call(20, 0, uintptr(unsafe.Pointer(imagePath)), 0x001A)
+	flag.Parse()
+	switch *function {
+	case "changeBackground":
+		imagePath := flag.Arg(0)
+		functions.ChangeBackground(imagePath)
+	default:
+		println("Invalid Command")
+	}
 }
